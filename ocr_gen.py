@@ -3,26 +3,37 @@ from backgrounder import Blackgrounder
 from utils.gen_text import generate_image_from_text
 from utils.utils import insert_augmented_images, save_yolo_format, save_yolo_obbox_format
 import os
+import shutil
 
 augmenter = Augmenter()
-augmenter.add_augmentation('rotation',angle_range=(-60,60))
+# augmenter.add_augmentation('rotation',angle_range=(-60,60))
 backgrounder = Blackgrounder()
 dict_name = 'name'
-num_bg = num_augment = 20
+num_bg = num_augment = 18
+output_path = "output"
+if os.path.exists(output_path):
+    shutil.rmtree(output_path)
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
 backgrounder.add_dict(dict_name,"background","image")
 backgrounds = backgrounder.get_background([dict_name],[num_bg],[None])
 
-images = []
+augmented_images = []
+oriented_bboxs = []
+class_indices = []
 word_list = ["สวัสดี","ocr_gen","hello"]
 font_list = os.listdir("fonts")
 
-for word in word_list:
+for idx,word in enumerate(word_list):
+    images = []
     for font in font_list:
         images.append(generate_image_from_text(word,os.path.join("fonts",font),font_size=100,text_color=(255,255,255),outline_color=(0,0,0),outline_thickness=3))
-class_name="text"
-augmenter.add_dict(class_name,images)
+    augmenter.add_dict(word,images)
+    num_class_images = num_augment // len(word_list)
+    augmented_images_ ,oriented_bboxs_ = augmenter.augment(word,num_class_images)
+    augmented_images.extend(augmented_images_)
+    oriented_bboxs.extend(oriented_bboxs_)
+    class_indices.extend([idx] * num_class_images)
 
-augmented_images ,oriented_bboxs = augmenter.augment(class_name,num_augment)
-
-frames_with_augmentations, bounding_boxes, oriented_bounding_boxs = insert_augmented_images(backgrounds, augmented_images, oriented_bboxs, [0],padding_crop=False)
-save_yolo_format(frames_with_augmentations, bounding_boxes, "output", ["text"])
+frames_with_augmentations, bounding_boxes, oriented_bounding_boxs = insert_augmented_images(backgrounds, augmented_images, oriented_bboxs, class_indices,padding_crop=False)
+save_yolo_format(frames_with_augmentations, bounding_boxes, output_path, word_list)

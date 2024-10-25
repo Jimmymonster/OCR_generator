@@ -200,7 +200,7 @@ def save_yolo_format(frames, bounding_boxes, output_folder, class_names):
     classes_file = os.path.join(output_folder, 'classes.txt')
     
     # Write class names to class.txt
-    with open(classes_file, 'w') as f:
+    with open(classes_file, 'w', encoding="utf-8") as f:
         for i, class_name in enumerate(class_names):
             f.write(f"{class_name}\n")
 
