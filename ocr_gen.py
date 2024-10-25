@@ -21,6 +21,7 @@ backgrounds = backgrounder.get_background([dict_name],[num_bg],[None])
 augmented_images = []
 oriented_bboxs = []
 class_indices = []
+font_indices = []
 word_list = ["สวัสดี","ocr_gen","hello"]
 font_list = os.listdir("fonts")
 
@@ -34,6 +35,8 @@ for idx,word in enumerate(word_list):
     augmented_images.extend(augmented_images_)
     oriented_bboxs.extend(oriented_bboxs_)
     class_indices.extend([idx] * num_class_images)
+    extended_font_indices = (font_list * (num_class_images // len(font_list) + 1))[:num_class_images]
+    font_indices.extend(extended_font_indices)
 
 frames_with_augmentations, bounding_boxes, oriented_bounding_boxs = insert_augmented_images(backgrounds, augmented_images, oriented_bboxs, class_indices,padding_crop=False)
-save_yolo_format(frames_with_augmentations, bounding_boxes, output_path, word_list)
+save_yolo_format(frames_with_augmentations, bounding_boxes, output_path, word_list, font_indices)
