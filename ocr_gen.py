@@ -22,13 +22,13 @@ augmented_images = []
 oriented_bboxs = []
 class_indices = []
 font_indices = []
-word_list = ["สวัสดี","ocr_gen","hello"]
+word_list = ["เป็นมนุษย์สุดประเสริฐเลิศคุณค่า กว่าบรรดาฝูงสัตว์เดรัจฉาน\nจงฝ่าฟันพัฒนาวิชาการ อย่าล้างผลาญฤๅเข่นฆ่าบีฑาใคร\nไม่ถือโทษโกรธแช่งซัดฮึดฮัดด่า หัดอภัยเหมือนกีฬาอัชฌาสัย\nปฏิบัติประพฤติกฎกำหนดใจ พูดจาให้จ๊ะๆ จ๋า น่าฟังเอยฯ","ocr_gen","hello"]
 font_list = os.listdir("fonts")
 
 for idx,word in enumerate(word_list):
     images = []
     for font in font_list:
-        images.append(generate_image_from_text(word,os.path.join("fonts",font),font_size=100,text_color=(255,255,255),outline_color=(0,0,0),outline_thickness=3))
+        images.append(generate_image_from_text(word,os.path.join("fonts",font),font_size=20,text_color=(255,255,255),outline_color=(0,0,0),outline_thickness=3))
     augmenter.add_dict(word,images)
     num_class_images = num_augment // len(word_list)
     augmented_images_ ,oriented_bboxs_ = augmenter.augment(word,num_class_images)

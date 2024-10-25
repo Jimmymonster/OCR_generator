@@ -237,7 +237,7 @@ def save_yolo_format(frames, bounding_boxes, output_folder, class_names,font_ind
     
         # Write class names to class.txt
         with open(classes_file, 'a', encoding="utf-8") as f:
-            f.write(f"{image_filename.split('\\')[-1]} {class_names[bboxes[0][0]]}\n")
+            f.write(f"{image_filename.split('\\')[-1]} {class_names[bboxes[0][0]].replace("\n"," ")}\n")
 
         # # Save the labels for the augmented images in this frame
         # with open(label_filename, 'w') as f:
