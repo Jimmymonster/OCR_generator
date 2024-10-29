@@ -186,7 +186,7 @@ def insert_augmented_images(frames, augmented_images, oriented_bboxs, class_indi
 
     return frames_with_augmentations, bounding_boxes, oriented_bounding_boxs
 
-def save_yolo_format(frames, bounding_boxes, output_folder, class_names,font_indices):
+def save_crop(frames, bounding_boxes, output_folder, class_names,font_indices):
     """Save frames and labels in YOLO format."""
     # Create necessary directories
     images_folder = os.path.join(output_folder, 'images')
@@ -244,6 +244,65 @@ def save_yolo_format(frames, bounding_boxes, output_folder, class_names,font_ind
         #     for class_id, bbox in bboxes:
         #         x_center, y_center, width, height = bbox
         #         f.write(f"{class_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
+
+def save(frames, bounding_boxes, output_folder, class_names,font_indices):
+    """Save frames and labels in YOLO format."""
+    # Create necessary directories
+    images_folder = os.path.join(output_folder, 'images')
+    labels_folder = os.path.join(output_folder, 'labels')
+    
+    if not os.path.exists(images_folder):
+        os.makedirs(images_folder)
+    if not os.path.exists(labels_folder):
+        os.makedirs(labels_folder)
+
+    classes_file = os.path.join(output_folder, 'classes.txt')
+    
+    # Write class names to class.txt
+    with open(classes_file, 'w', encoding="utf-8") as f:
+        for i, class_name in enumerate(class_names):
+            f.write(f"{class_name}\n")
+
+    # Save images and labels
+    for i, (frame, bboxes) in enumerate(zip(frames, bounding_boxes)):
+        image = Image.fromarray(frame)
+        # left = bboxes[0][1][0] - bboxes[0][1][2]/2
+        # upper = bboxes[0][1][1] - bboxes[0][1][3]/2
+        # right = bboxes[0][1][0] + bboxes[0][1][2]/2
+        # lower = bboxes[0][1][1] + bboxes[0][1][3]/2
+        # image = image.crop((left*image.width, upper*image.height, right*image.width, lower*image.height))
+
+        font_indices[i] = font_indices[i].rsplit('.', 1)[0]
+        font_indices[i] = font_indices[i].replace(' ','')
+        
+        # Ensure image is in RGB mode before saving
+        if(i%2==0):
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            
+            image_filename = os.path.join(images_folder, f"{font_indices[i]}_{i:04d}.jpg")
+            label_filename = os.path.join(labels_folder, f"{font_indices[i]}_{i:04d}.txt")
+
+        else:
+            if image.mode != 'RGBA':
+                image = image.convert('RGBA')
+            
+            image_filename = os.path.join(images_folder, f"{font_indices[i]}_{i:04d}.png")
+            label_filename = os.path.join(labels_folder, f"{font_indices[i]}_{i:04d}.txt")
+        
+        # Save the frame as an image
+        image.save(image_filename)
+        classes_file = os.path.join(output_folder, 'labels.txt')
+    
+        # Write class names to class.txt
+        # with open(classes_file, 'a', encoding="utf-8") as f:
+        #     f.write(f"{image_filename.split('\\')[-1]} {class_names[bboxes[0][0]].replace("\n"," ")}\n")
+
+        # # Save the labels for the augmented images in this frame
+        with open(label_filename, 'w') as f:
+            for class_id, bbox in bboxes:
+                x_center, y_center, width, height = bbox
+                f.write(f"{class_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
 
 def save_yolo_obbox_format(frames, oriented_bounding_boxs, output_folder, class_names):
     """Save frames and labels in YOLO format."""

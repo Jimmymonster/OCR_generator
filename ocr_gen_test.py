@@ -1,7 +1,7 @@
 from augmenter import Augmenter
 from backgrounder import Blackgrounder
 from utils.gen_text import generate_image_from_text
-from utils.utils import insert_augmented_images, save_crop
+from utils.utils import insert_augmented_images, save
 import os
 import shutil
 
@@ -10,7 +10,7 @@ augmenter = Augmenter()
 backgrounder = Blackgrounder()
 dict_name = 'name'
 
-output_path = "output"
+output_path = "output_test"
 if os.path.exists(output_path):
     shutil.rmtree(output_path)
 if not os.path.exists(output_path):
@@ -45,4 +45,4 @@ for idx,word in enumerate(word_list):
     font_indices.extend(extended_font_indices)
 
 frames_with_augmentations, bounding_boxes, oriented_bounding_boxs = insert_augmented_images(backgrounds, augmented_images, oriented_bboxs, class_indices,padding_crop=False)
-save_crop(frames_with_augmentations, bounding_boxes, output_path, word_list, font_indices)
+save(frames_with_augmentations, bounding_boxes, output_path, word_list, font_indices)
