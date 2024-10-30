@@ -2,6 +2,7 @@ from augmenter import Augmenter
 from backgrounder import Blackgrounder
 from utils.gen_text import generate_image_from_text
 from utils.utils import insert_augmented_images, save_crop
+from utils.gen_random import generate_random_strings
 import os
 import shutil
 
@@ -24,7 +25,9 @@ class_indices = []
 font_indices = []
 word_list = []
 # word_list.extend(["เป็นมนุษย์","สุดประเสริฐ","เลิศคุณค่า","กว่าบรรดา","ฝูงสัตว์เดรัจฉาน","จงฝ่าฟัน","พัฒนาวิชาการ","อย่าล้างผลาญฤๅ","เข่นฆ่าบีฑาใคร","ไม่ถือโทษโกรธ","แช่งซัดฮึดฮัดด่า","หัดอภัย","เหมือนกีฬา","อัชฌาสัย","ปฏิบัติ","ประพฤติกฎ","กำหนดใจ","พูดจาให้จ๊ะๆ จ๋า","น่าฟังเอยฯ"])
-word_list.extend(["The","quick","brown","fox","jumps","over","the","lazy","dog"])
+# word_list.extend(["The","quick","brown","fox","jumps","over","the","lazy","dog"])
+word_list.extend(["ยาย","กิน","ลำไย","น้ำลาย","ยาย","ไหล","ย้อย","ชาม","เขียว","คว่ำ","เช้า","วันพฤหัส","กตัญญูกตเวที","ทฤษฏี"])
+# word_list.extend(generate_random_strings("english",7,14))
 font_list = os.listdir("fonts")
 font_list = ["DSN ThaiRat Regular.ttf"]
 

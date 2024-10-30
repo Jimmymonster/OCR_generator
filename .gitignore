@@ -2,5 +2,7 @@ __pycache__
 background
 fonts
 output
+output_test
+background_test
 video
 *.zip
