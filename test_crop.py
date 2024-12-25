@@ -1,6 +1,7 @@
 import os
 import cv2
 from tqdm import tqdm
+import shutil
 
 # Paths to your YOLO project folders
 yolo_folder = 'output_test'
@@ -8,13 +9,18 @@ images_folder = f'{yolo_folder}/images'
 labels_folder = f'{yolo_folder}/labels'
 output_folder = 'test_crop'
 classes_file = f'{yolo_folder}/classes.txt'
+output_label_file = os.path.join(output_folder, 'label.txt')
 
+if os.path.exists(output_folder):
+    shutil.rmtree(output_folder)
 # Create output folder if not exists
 os.makedirs(output_folder, exist_ok=True)
 
 # Load class names
 with open(classes_file, 'r', encoding='utf-8') as f:
     class_names = f.read().strip().split('\n')
+
+label_entries = []
 
 # Iterate through label files
 for label_file in tqdm(os.listdir(labels_folder)):
@@ -52,5 +58,13 @@ for label_file in tqdm(os.listdir(labels_folder)):
         
         # Save cropped image
         class_name = class_names[int(cls)]
-        save_path = os.path.join(output_folder, f'{label_file.replace(".txt", "")}_{class_name}_{i}.jpg')
+        save_name = f'{label_file.replace(".txt", "")}_{i}.jpg'
+        save_path = os.path.join(output_folder, save_name)
         cv2.imwrite(save_path, cropped_image)
+        
+        # Add entry to label file
+        label_entries.append(f'{save_name}\t{class_name}')
+
+# Write label entries to file
+with open(output_label_file, 'w', encoding='utf-8') as f:
+    f.write('\n'.join(label_entries))
