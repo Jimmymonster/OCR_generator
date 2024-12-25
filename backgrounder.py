@@ -121,7 +121,7 @@ class Blackgrounder:
         if name in self.background_dict:
             self.background_dict[name].append(["rgb",rgb_image, max_frames])
         else:
-            self.background_dict[name] = ["rgb",rgb_image, max_frames]
+            self.background_dict[name] = [["rgb",rgb_image, max_frames]]
     def add_dict(self, name, path, type, max_frames:int = None):
         #there are two types first is image this type path will be directory, second is video this type path will be video file
         if name not in self.background_dict:

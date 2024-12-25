@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from augmenter import Augmenter
 from backgrounder import Blackgrounder
 from utils.gen_text import generate_image_from_text
@@ -16,8 +18,9 @@ if os.path.exists(output_path):
     shutil.rmtree(output_path)
 if not os.path.exists(output_path):
     os.makedirs(output_path)
-backgrounder.add_dict(dict_name,"background","image")
-backgrounder.add_dict(dict_name,"video/video_TNN.mp4","video")
+# backgrounder.add_dict(dict_name,"background","image")
+# backgrounder.add_dict(dict_name,"video/video_TNN.mp4","video")
+backgrounder.add_rgb_bg_dict(dict_name,(255,255,255),1000,300)
 
 augmented_images = []
 oriented_bboxs = []
@@ -29,7 +32,7 @@ word_list = []
 word_list.extend(["ยาย","กิน","ลำไย","น้ำลาย","ยาย","ไหล","ย้อย","ชาม","เขียว","คว่ำ","เช้า","วันพฤหัส","กตัญญูกตเวที","ทฤษฏี"])
 # word_list.extend(generate_random_strings("english",7,14))
 font_list = os.listdir("fonts")
-font_list = ["DSN ThaiRat Regular.ttf"]
+# font_list = ["DSN ThaiRat Regular.ttf"]
 
 num_bg = num_augment = len(word_list)*len(font_list)
 
@@ -37,7 +40,7 @@ backgrounds = backgrounder.get_background([dict_name],[num_bg],[None])
 for idx,word in enumerate(word_list):
     images = []
     for font in font_list:
-        images.append(generate_image_from_text(word,os.path.join("fonts",font),font_size=50,text_color=(255,255,255),outline_color=(0,0,0),outline_thickness=3))
+        images.append(generate_image_from_text(word,os.path.join("fonts",font),font_size=50,text_color=(0,0,0),outline_color=(0,0,0),outline_thickness=1))
     augmenter.add_dict(word,images)
     num_class_images = num_augment // len(word_list)
     augmented_images_ ,oriented_bboxs_ = augmenter.augment(word,num_class_images)
